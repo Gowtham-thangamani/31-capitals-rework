@@ -1,0 +1,26 @@
+<svg viewBox="0 0 220 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="31c-diamond" x1="110" y1="8" x2="110" y2="152" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF8A65"/>
+      <stop offset="0.22" stop-color="#FF6A3A"/>
+      <stop offset="0.55" stop-color="#F24701"/>
+      <stop offset="1" stop-color="#C62800"/>
+    </linearGradient>
+  </defs>
+  <path
+    fill="url(#31c-diamond)"
+    d="M48 8H152L210 51L110 152L10 51Z"
+  />
+  <g stroke="#FFFFFF" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M48 8H152L210 51L110 152L10 51Z"/>
+    <path d="M48 8L110 28L152 8"/>
+    <path d="M10 51L92 46L110 28L128 46L210 51"/>
+    <path d="M36 40L110 55L184 40"/>
+    <path d="M10 51L110 88L210 51"/>
+    <path d="M110 28L110 152"/>
+  </g>
+  <path
+    fill="#FFFFFF"
+    d="M110 34C112.6 48.2 112.6 48.2 128 55C112.6 61.8 112.6 61.8 110 76C107.4 61.8 107.4 61.8 92 55C107.4 48.2 107.4 48.2 110 34Z"
+  />
+</svg>

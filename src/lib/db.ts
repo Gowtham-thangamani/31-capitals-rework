@@ -41,6 +41,16 @@ const SCHEMA = `
   );
   CREATE INDEX IF NOT EXISTS leads_created_at_idx ON leads (created_at DESC);
   CREATE INDEX IF NOT EXISTS leads_email_idx ON leads (email);
+
+  -- Failed admin logins, so the panel password cannot be brute forced. Stored in
+  -- the database rather than in memory because serverless runs many instances and
+  -- an in-process counter would reset on every cold start.
+  CREATE TABLE IF NOT EXISTS admin_login_attempts (
+    id           BIGSERIAL PRIMARY KEY,
+    ip           TEXT NOT NULL,
+    attempted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+  CREATE INDEX IF NOT EXISTS admin_login_attempts_idx ON admin_login_attempts (ip, attempted_at DESC);
 `;
 
 /** Applied once per process, on first use. */

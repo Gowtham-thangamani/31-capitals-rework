@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { listLeads } from "@/lib/leads";
 import { isDbConfigured } from "@/lib/db";
 import { ADMIN_COOKIE_NAME, adminPasswordConfigured, isAdminSessionValid } from "@/lib/verification";
 import { LoginForm } from "@/app/admin/login-form";
@@ -11,7 +10,7 @@ export const metadata = { title: "Leads | 31 Capitals", robots: { index: false, 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-[#060606] px-4 py-12 sm:px-8">
-      <div className="mx-auto max-w-6xl">{children}</div>
+      <div className="mx-auto max-w-7xl">{children}</div>
     </main>
   );
 }
@@ -37,8 +36,7 @@ export default async function AdminPage() {
     );
   }
 
-  const authed = isAdminSessionValid((await cookies()).get(ADMIN_COOKIE_NAME)?.value);
-  if (!authed) {
+  if (!isAdminSessionValid((await cookies()).get(ADMIN_COOKIE_NAME)?.value)) {
     return (
       <Shell>
         <LoginForm />
@@ -57,25 +55,12 @@ export default async function AdminPage() {
     );
   }
 
-  let leads = null;
-  let dbError = "";
-  try {
-    leads = await listLeads();
-  } catch (err) {
-    dbError = err instanceof Error ? err.message : "Unknown database error.";
-  }
-
-  if (dbError) {
-    return (
-      <Shell>
-        <Notice title="Could not read leads" body={dbError} />
-      </Shell>
-    );
-  }
-
+  // Rows are fetched client-side from /api/admin/leads so the table can filter,
+  // paginate and refresh without a full page reload. That endpoint checks the
+  // same session cookie, so lead data still never reaches an unauthenticated client.
   return (
     <Shell>
-      <LeadsTable leads={leads ?? []} />
+      <LeadsTable />
     </Shell>
   );
 }

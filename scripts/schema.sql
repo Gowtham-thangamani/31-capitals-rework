@@ -38,6 +38,23 @@ ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
 
 REVOKE ALL ON public.leads FROM anon, authenticated;
 
+-- ---------------------------------------------------------------------------
+-- Failed admin logins, so the panel password cannot be brute forced.
+-- Stored here rather than in memory because serverless runs many short-lived
+-- instances and an in-process counter would reset on every cold start.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.admin_login_attempts (
+  id           BIGSERIAL PRIMARY KEY,
+  ip           TEXT NOT NULL,
+  attempted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS admin_login_attempts_idx
+  ON public.admin_login_attempts (ip, attempted_at DESC);
+
+ALTER TABLE public.admin_login_attempts ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.admin_login_attempts FROM anon, authenticated;
+
 -- Check it worked: expect rls_enabled = true
 SELECT
   relname             AS table_name,

@@ -1,4 +1,5 @@
 import { createHmac, randomInt, timingSafeEqual } from "crypto";
+import { verificationHtml, verificationSubject, verificationText } from "@/lib/verification-email";
 
 const SECRET = process.env.VERIFY_SECRET || "31capitals-local-dev-secret";
 export const COOKIE_NAME = "tc_verify";
@@ -98,32 +99,31 @@ export function registerRedirectUrl() {
 export async function sendEmailCode(to: string, code: string, name: string) {
   const key = process.env.RESEND_API_KEY;
   if (!key) return false;
+
   const from = process.env.EMAIL_FROM || "31 Capitals <noreply@31capitals.com>";
+  const minutes = Math.round(CODE_TTL_MS / 60_000);
+
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from,
       to,
-      subject: "Your 31 Capitals verification code",
-      html: `
-        <div style="font-family:Arial,sans-serif;background:#050505;color:#fff;padding:32px">
-          <h2 style="color:#ff7a28;margin:0 0 12px">31 Capitals</h2>
-          <p>Hello ${escapeHtml(name)},</p>
-          <p>Your verification code is:</p>
-          <p style="font-size:32px;letter-spacing:8px;font-weight:700;color:#ff7a28">${code}</p>
-          <p style="color:#aaa;font-size:13px">This code expires in 10 minutes. If you did not request it, you can ignore this email.</p>
-        </div>
-      `,
+      subject: verificationSubject(code),
+      html: verificationHtml({ code, name, minutes }),
+      // A text part is expected by spam filters and by text-only clients.
+      text: verificationText({ code, name, minutes }),
+      headers: {
+        // Marks this as a transactional one-off so clients do not offer to unsubscribe
+        // and mailing-list heuristics do not apply.
+        "X-Entity-Ref-ID": `verify-${Date.now()}`,
+      },
     }),
   });
+
+  if (!res.ok) {
+    console.error("[email] Resend rejected the message:", res.status, await res.text().catch(() => ""));
+  }
   return res.ok;
 }
 
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}

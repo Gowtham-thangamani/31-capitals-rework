@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/fx/Reveal";
 
-// Swap to "/brand/markets-globe-alt-v2.png" for the wider planet render.
 // Filenames carry a version suffix: the optimiser and the browser both cache by
 // URL, so re-cropping the artwork needs a new name to actually take effect.
 const GLOBE_IMAGE = "/brand/markets-globe-v2.png";

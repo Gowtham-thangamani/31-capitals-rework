@@ -1,9 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import Image from "next/image";
 import { Reveal } from "@/components/fx/Reveal";
-
-const ChartScene = dynamic(() => import("@/components/canvas/ChartScene").then((m) => m.ChartScene), { ssr: false });
 
 const items = [
   "Market insights written for active traders",
@@ -30,8 +28,15 @@ export function Services() {
             ))}
           </ul>
         </div>
-        <div className="relative h-[360px] bg-[radial-gradient(circle_at_center,rgba(255,74,16,0.16),transparent_60%)] lg:h-auto">
-          <ChartScene />
+        <div className="relative h-[360px] min-h-[360px] bg-[radial-gradient(circle_at_center,rgba(255,74,16,0.16),transparent_60%)] lg:h-auto">
+          <Image
+            src="/brand/bull-v2.png"
+            alt=""
+            aria-hidden
+            fill
+            sizes="(max-width: 1024px) 100vw, 55vw"
+            className="object-contain p-6 sm:p-8"
+          />
         </div>
       </Reveal>
     </section>

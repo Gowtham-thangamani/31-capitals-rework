@@ -239,8 +239,10 @@ body {
   --a-border: rgba(255, 255, 255, 0.1);
   --a-border-strong: rgba(255, 255, 255, 0.18);
   --a-ink: #f7f1ea;
-  --a-muted: rgba(247, 241, 234, 0.55);
-  --a-faint: rgba(247, 241, 234, 0.34);
+  --a-muted: rgba(247, 241, 234, 0.7);
+  /* 0.34 measured 2.8:1 against every dark surface, below the 4.5:1 minimum for
+     body text; 0.55 clears it on page, surface and raised alike. */
+  --a-faint: rgba(247, 241, 234, 0.55);
   --a-accent: #ff7a28;
   --a-accent-soft: rgba(255, 122, 40, 0.12);
   --a-good: #34d399;
@@ -256,8 +258,10 @@ body {
   --a-border: rgba(23, 18, 14, 0.12);
   --a-border-strong: rgba(23, 18, 14, 0.22);
   --a-ink: #17120e;
-  --a-muted: rgba(23, 18, 14, 0.62);
-  --a-faint: rgba(23, 18, 14, 0.42);
+  --a-muted: rgba(23, 18, 14, 0.72);
+  /* 0.42 measured 2.7:1 against every light surface, below the 4.5:1 minimum
+     for body text; 0.62 clears it on page, surface and raised alike. */
+  --a-faint: rgba(23, 18, 14, 0.62);
   /* the brand orange fails contrast as text on white, so text uses a deeper step */
   --a-accent: #c2410c;
   --a-accent-soft: rgba(255, 122, 40, 0.14);

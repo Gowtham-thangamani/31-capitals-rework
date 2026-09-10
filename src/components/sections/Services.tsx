@@ -28,14 +28,27 @@ export function Services() {
             ))}
           </ul>
         </div>
-        <div className="relative h-[360px] min-h-[360px] bg-[radial-gradient(circle_at_center,rgba(255,74,16,0.16),transparent_60%)] lg:h-auto">
+        {/* Full-bleed artwork, masked at the edges so it melts into the panel rather
+            than ending on a hard rectangle. The left edge fades hardest, since that is
+            where it meets the copy. */}
+        <div
+          className="relative h-[360px] min-h-[360px] overflow-hidden lg:h-auto"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 22%, #000 46%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)",
+            maskComposite: "intersect",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 22%, #000 46%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)",
+            WebkitMaskComposite: "source-in",
+          }}
+        >
           <Image
-            src="/brand/bull-v2.png"
+            src="/brand/bull-v5.jpg"
             alt=""
             aria-hidden
             fill
             sizes="(max-width: 1024px) 100vw, 55vw"
-            className="object-contain p-6 sm:p-8"
+            className="object-cover"
           />
         </div>
       </Reveal>

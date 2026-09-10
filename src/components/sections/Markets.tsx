@@ -7,8 +7,6 @@ import { Reveal } from "@/components/fx/Reveal";
 // URL, so re-cropping the artwork needs a new name to actually take effect.
 const GLOBE_IMAGE = "/brand/markets-globe-v2.png";
 
-const regions = ["Americas", "Europe", "Africa", "Middle East", "Asia", "Oceania"];
-
 export function Markets() {
   return (
     <section id="markets" className="px-4 py-24 sm:px-6">
@@ -23,16 +21,6 @@ export function Markets() {
             Clients and partners in every region — a desk that works across time zones, languages, and onboarding
             realities.
           </p>
-          <div className="mt-8 flex flex-wrap gap-2">
-            {regions.map((name) => (
-              <span
-                key={name}
-                className="rounded-full border border-orange-400/20 bg-orange-500/10 px-3 py-1.5 text-xs uppercase tracking-[0.16em] text-orange-100"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
         </Reveal>
         <Reveal delay={0.12} className="relative h-[460px]">
           <Image

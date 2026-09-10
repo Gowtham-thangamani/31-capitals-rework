@@ -223,3 +223,56 @@ body {
   background: linear-gradient(#ff7a28, #4a1008);
   border-radius: 999px;
 }
+
+/* ---------------------------------------------------------------------------
+   Admin panel theming.
+
+   Scoped to .admin-scope so the marketing site stays dark-only — the admin is
+   the one surface people stare at for long stretches, which is why it gets a
+   light option. Colours are declared as tokens on both themes so no component
+   hardcodes a light- or dark-specific value.
+--------------------------------------------------------------------------- */
+.admin-scope {
+  --a-bg: #040404;
+  --a-surface: #0e0e0e;
+  --a-raised: #161616;
+  --a-border: rgba(255, 255, 255, 0.1);
+  --a-border-strong: rgba(255, 255, 255, 0.18);
+  --a-ink: #f7f1ea;
+  --a-muted: rgba(247, 241, 234, 0.55);
+  --a-faint: rgba(247, 241, 234, 0.34);
+  --a-accent: #ff7a28;
+  --a-accent-soft: rgba(255, 122, 40, 0.12);
+  --a-good: #34d399;
+  --a-good-soft: rgba(52, 211, 153, 0.14);
+  --a-bloom: rgba(255, 90, 20, 0.13);
+  color-scheme: dark;
+}
+
+.admin-scope[data-theme="light"] {
+  --a-bg: #f7f4f1;
+  --a-surface: #ffffff;
+  --a-raised: #fbf9f7;
+  --a-border: rgba(23, 18, 14, 0.12);
+  --a-border-strong: rgba(23, 18, 14, 0.22);
+  --a-ink: #17120e;
+  --a-muted: rgba(23, 18, 14, 0.62);
+  --a-faint: rgba(23, 18, 14, 0.42);
+  /* the brand orange fails contrast as text on white, so text uses a deeper step */
+  --a-accent: #c2410c;
+  --a-accent-soft: rgba(255, 122, 40, 0.14);
+  --a-good: #047857;
+  --a-good-soft: rgba(4, 120, 87, 0.12);
+  --a-bloom: rgba(255, 122, 40, 0.16);
+  color-scheme: light;
+}
+
+.admin-scope {
+  background: var(--a-bg);
+  color: var(--a-ink);
+}
+
+.a-panel {
+  background: var(--a-surface);
+  border: 1px solid var(--a-border);
+}

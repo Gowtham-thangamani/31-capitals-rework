@@ -1,6 +1,8 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Logo } from "@/components/brand/Logo";
+import { ThemeToggle, useAdminTheme } from "@/app/admin/theme-toggle";
 import type { Lead, LeadStats, SortKey } from "@/lib/leads";
 
 const REFRESH_MS = 30_000;
@@ -27,12 +29,12 @@ function formatDate(value: string | null) {
   return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString();
 }
 
-function Stat({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
+/** A supporting figure. Deliberately quiet: only conversion is allowed to shout. */
+function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-      <p className="text-[11px] tracking-[0.16em] text-white/40 uppercase">{label}</p>
-      <p className="mt-1 font-display text-2xl text-white">{value}</p>
-      {hint ? <p className="mt-0.5 text-[11px] text-white/35">{hint}</p> : null}
+    <div className="px-5 py-3.5">
+      <p className="font-display text-xl tabular-nums" style={{ color: "var(--a-ink)" }}>{value}</p>
+      <p className="mt-0.5 text-xs" style={{ color: "var(--a-faint)" }}>{label}</p>
     </div>
   );
 }
@@ -52,7 +54,8 @@ function CopyButton({ text, title }: { text: string; title: string }) {
           /* clipboard unavailable (insecure context) — ignore */
         }
       }}
-      className="ml-1.5 rounded px-1 text-[10px] text-white/30 transition hover:bg-white/10 hover:text-white/80"
+      className="ml-1.5 rounded px-1 text-[10px] transition"
+      style={{ color: "var(--a-faint)" }}
     >
       {done ? "✓" : "copy"}
     </button>
@@ -60,6 +63,7 @@ function CopyButton({ text, title }: { text: string; title: string }) {
 }
 
 export function LeadsTable() {
+  const { theme, setTheme } = useAdminTheme();
   const [rows, setRows] = useState<Lead[]>([]);
   const [stats, setStats] = useState<LeadStats | null>(null);
   const [total, setTotal] = useState(0);
@@ -174,23 +178,31 @@ export function LeadsTable() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="font-display text-3xl text-white">Leads</p>
-          <p className="mt-1 text-sm text-white/45">
-            Updates every 30s{loading ? " · loading…" : ""}
-          </p>
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-6"
+        style={{ borderBottom: "1px solid var(--a-border)" }}>
+        <div className="flex items-center gap-5">
+          <Logo markClassName="h-8 w-auto" wordmarkClassName="h-5 w-auto" priority onLight={theme === "light"} />
+          <span className="hidden h-7 w-px sm:block" style={{ background: "var(--a-border-strong)" }} />
+          <div className="hidden sm:block">
+            <p className="font-display text-lg" style={{ color: "var(--a-ink)" }}>Leads</p>
+            <p className="text-xs" style={{ color: "var(--a-faint)" }}>
+              {loading ? "Refreshing…" : "Updates every 30 seconds"}
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <ThemeToggle theme={theme} onChange={setTheme} />
           <button
             onClick={downloadCsv}
-            className="h-10 rounded-lg border border-orange-400/40 bg-orange-500/10 px-4 text-sm text-orange-100 transition hover:bg-orange-500/20"
+            className="h-10 rounded-lg px-4 text-sm transition"
+            style={{ border: "1px solid var(--a-border-strong)", background: "var(--a-accent-soft)", color: "var(--a-accent)" }}
           >
             Export CSV
           </button>
           <button
             onClick={signOut}
-            className="h-10 rounded-lg border border-white/12 px-4 text-sm text-white/60 transition hover:text-white"
+            className="h-10 rounded-lg px-4 text-sm transition"
+            style={{ border: "1px solid var(--a-border)", color: "var(--a-muted)" }}
           >
             Sign out
           </button>
@@ -198,13 +210,27 @@ export function LeadsTable() {
       </div>
 
       {stats ? (
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <Stat label="Total" value={stats.total} />
-          <Stat label="Verified" value={stats.verified} />
-          <Stat label="Pending" value={stats.pending} />
-          <Stat label="Conversion" value={`${stats.conversion}%`} hint="verified / total" />
-          <Stat label="Today" value={stats.today} />
-          <Stat label="30 days" value={stats.last30} hint={`${stats.last7} in last 7`} />
+        <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-stretch">
+          {/* The figure the desk acts on, given the weight to match */}
+          <div className="a-panel flex items-center gap-6 rounded-2xl px-7 py-6">
+            <div>
+              <p className="font-display text-6xl leading-none tracking-[-0.04em] text-gradient tabular-nums">
+                {stats.conversion}%
+              </p>
+              <p className="mt-2 text-sm" style={{ color: "var(--a-muted)" }}>
+                of registrations complete verification
+              </p>
+            </div>
+          </div>
+
+          <div className="a-panel flex flex-1 flex-wrap items-center rounded-2xl divide-x" style={{ borderColor: "var(--a-border)" }}>
+            <Stat label="Total leads" value={stats.total} />
+            <Stat label="Verified" value={stats.verified} />
+            <Stat label="Pending" value={stats.pending} />
+            <Stat label="Today" value={stats.today} />
+            <Stat label="Last 7 days" value={stats.last7} />
+            <Stat label="Last 30 days" value={stats.last30} />
+          </div>
         </div>
       ) : null}
 
@@ -213,25 +239,30 @@ export function LeadsTable() {
           value={q}
           onChange={(e) => applyFilter(() => setQ(e.target.value))}
           placeholder="Search name, email, phone, country"
-          className="h-10 w-64 rounded-lg border border-white/12 bg-[#111] px-3 text-sm text-white outline-none focus:border-orange-400/70"
+          className="h-10 w-64 rounded-lg px-3 text-sm outline-none"
+          style={{ background: "var(--a-raised)", border: "1px solid var(--a-border)", color: "var(--a-ink)" }}
         />
         <select
           value={status}
           onChange={(e) => applyFilter(() => setStatus(e.target.value as typeof status))}
-          className="h-10 rounded-lg border border-white/12 bg-[#111] px-3 text-sm text-white outline-none focus:border-orange-400/70"
+          className="h-10 rounded-lg px-3 text-sm outline-none"
+          style={{ background: "var(--a-raised)", border: "1px solid var(--a-border)", color: "var(--a-ink)" }}
         >
           <option value="all">All statuses</option>
           <option value="verified">Verified</option>
           <option value="pending">Pending</option>
         </select>
-        <div className="flex h-10 items-center gap-1 rounded-lg border border-white/12 p-1">
+        <div className="flex h-10 items-center gap-1 rounded-lg p-1" style={{ border: "1px solid var(--a-border)" }}>
           {DATE_RANGES.map((r) => (
             <button
               key={r.label}
               onClick={() => applyFilter(() => setDays(r.days))}
-              className={`rounded px-2.5 py-1 text-xs transition ${
-                days === r.days ? "bg-orange-500/20 text-orange-100" : "text-white/50 hover:text-white"
-              }`}
+              className="rounded px-2.5 py-1 text-xs transition"
+              style={
+                days === r.days
+                  ? { background: "var(--a-accent-soft)", color: "var(--a-accent)" }
+                  : { color: "var(--a-faint)" }
+              }
             >
               {r.label}
             </button>
@@ -240,18 +271,19 @@ export function LeadsTable() {
       </div>
 
       {error ? (
-        <p className="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">{error}</p>
+        <p className="mt-4 rounded-lg px-4 py-3 text-sm"
+           style={{ border: "1px solid rgba(220,38,38,0.3)", background: "rgba(220,38,38,0.10)", color: theme === "dark" ? "#fca5a5" : "#b91c1c" }}>{error}</p>
       ) : null}
 
-      <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10">
+      <div className="mt-4 overflow-x-auto rounded-2xl" style={{ border: "1px solid var(--a-border)", background: "var(--a-surface)" }}>
         <table className="w-full min-w-[820px] text-left text-sm">
-          <thead className="bg-white/[0.04] text-[11px] tracking-[0.14em] text-white/45 uppercase">
+          <thead className="text-[11px] tracking-[0.14em] uppercase" style={{ background: "var(--a-raised)", color: "var(--a-faint)" }}>
             <tr>
               {COLUMNS.map((c) => (
                 <th key={c.key} className="px-4 py-3 font-medium">
-                  <button onClick={() => toggleSort(c.key)} className="transition hover:text-white">
+                  <button onClick={() => toggleSort(c.key)} className="transition">
                     {c.label}
-                    {sort === c.key ? <span className="ml-1 text-orange-300">{dir === "asc" ? "↑" : "↓"}</span> : null}
+                    {sort === c.key ? <span className="ml-1" style={{ color: "var(--a-accent)" }}>{dir === "asc" ? "↑" : "↓"}</span> : null}
                   </button>
                 </th>
               ))}
@@ -261,7 +293,7 @@ export function LeadsTable() {
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-white/40">
+                <td colSpan={6} className="px-4 py-10 text-center" style={{ color: "var(--a-faint)" }}>
                   {loading ? "Loading…" : total === 0 ? "No leads yet." : "No leads match those filters."}
                 </td>
               </tr>
@@ -270,52 +302,55 @@ export function LeadsTable() {
                 <Fragment key={l.id}>
                   <tr
                     onClick={() => setExpanded(expanded === l.id ? null : l.id)}
-                    className={`cursor-pointer border-t border-white/8 transition ${
-                      fresh.has(l.id) ? "bg-orange-500/15" : "hover:bg-white/[0.03]"
-                    }`}
+                    className="cursor-pointer transition"
+                    style={{
+                      borderTop: "1px solid var(--a-border)",
+                      background: fresh.has(l.id) ? "var(--a-accent-soft)" : undefined,
+                    }}
                   >
-                    <td className="px-4 py-3 text-white">{l.name}</td>
-                    <td className="px-4 py-3 text-white/70">{l.email}</td>
-                    <td className="px-4 py-3 text-white/60">{l.country}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--a-ink)" }}>{l.name}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--a-muted)" }}>{l.email}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--a-muted)" }}>{l.country}</td>
                     <td className="px-4 py-3">
                       <span
-                        className={
+                        className="rounded-full px-2.5 py-1 text-xs"
+                        style={
                           l.status === "verified"
-                            ? "rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs text-emerald-300"
-                            : "rounded-full bg-white/10 px-2.5 py-1 text-xs text-white/50"
+                            ? { background: "var(--a-good-soft)", color: "var(--a-good)" }
+                            : { background: "var(--a-accent-soft)", color: "var(--a-faint)" }
                         }
                       >
                         {l.status === "verified" ? "✓ verified" : "pending"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-white/50">{formatDate(l.created_at)}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--a-faint)" }}>{formatDate(l.created_at)}</td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                      <a href={`mailto:${l.email}`} className="text-orange-200 hover:underline">
+                      <a href={`mailto:${l.email}`} className="hover:underline" style={{ color: "var(--a-accent)" }}>
                         email
                       </a>
-                      <span className="px-1.5 text-white/20">·</span>
-                      <a href={`tel:${l.phone}`} className="text-orange-200 hover:underline">
+                      <span className="px-1.5" style={{ color: "var(--a-faint)" }}>·</span>
+                      <a href={`tel:${l.phone}`} className="hover:underline" style={{ color: "var(--a-accent)" }}>
                         call
                       </a>
                       <CopyButton text={l.phone} title="Copy phone number" />
                     </td>
                   </tr>
                   {expanded === l.id ? (
-                    <tr className="border-t border-white/8 bg-black/40">
+                    <tr style={{ borderTop: "1px solid var(--a-border)", background: "var(--a-raised)" }}>
                       <td colSpan={6} className="px-4 py-4">
-                        <div className="grid gap-x-8 gap-y-2 text-xs text-white/55 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid gap-x-8 gap-y-2 text-xs sm:grid-cols-2 lg:grid-cols-4" style={{ color: "var(--a-muted)" }}>
                           <p>
-                            <span className="text-white/35">Phone</span>{" "}
-                            <span className="font-mono text-white/80">{l.phone}</span>
+                            <span style={{ color: "var(--a-faint)" }}>Phone</span>{" "}
+                            <span className="font-mono" style={{ color: "var(--a-ink)" }}>{l.phone}</span>
                           </p>
                           <p>
-                            <span className="text-white/35">Verified</span> {formatDate(l.verified_at)}
+                            <span style={{ color: "var(--a-faint)" }}>Verified</span> {formatDate(l.verified_at)}
                           </p>
                           <p>
-                            <span className="text-white/35">IP</span> {l.ip || "—"}
+                            <span style={{ color: "var(--a-faint)" }}>IP</span> {l.ip || "—"}
                           </p>
                           <p className="truncate lg:col-span-1">
-                            <span className="text-white/35">Device</span> {l.user_agent || "—"}
+                            <span style={{ color: "var(--a-faint)" }}>Device</span> {l.user_agent || "—"}
                           </p>
                         </div>
                       </td>
@@ -328,7 +363,7 @@ export function LeadsTable() {
         </table>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-white/45">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm" style={{ color: "var(--a-muted)" }}>
         <p>
           {total === 0
             ? "0 leads"
@@ -338,7 +373,7 @@ export function LeadsTable() {
           <button
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="h-9 rounded-lg border border-white/12 px-3 transition enabled:hover:text-white disabled:opacity-30"
+            className="h-9 rounded-lg px-3 transition disabled:opacity-30" style={{ border: "1px solid var(--a-border)" }}
           >
             ‹ Prev
           </button>
@@ -348,7 +383,7 @@ export function LeadsTable() {
           <button
             disabled={page >= pages}
             onClick={() => setPage((p) => Math.min(pages, p + 1))}
-            className="h-9 rounded-lg border border-white/12 px-3 transition enabled:hover:text-white disabled:opacity-30"
+            className="h-9 rounded-lg px-3 transition disabled:opacity-30" style={{ border: "1px solid var(--a-border)" }}
           >
             Next ›
           </button>

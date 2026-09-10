@@ -91,9 +91,14 @@ export function deliveryConfigured() {
   return { email: Boolean(process.env.RESEND_API_KEY) };
 }
 
-/** Where verified registrations are sent. Env-driven so an IB tracking code can be added without a deploy. */
+/**
+ * Where verified registrations are sent: the 31 Capitals IB referral link, so
+ * introductions are credited. Env-driven so it can be changed without a deploy;
+ * the fallback is the same referral link rather than a bare signup URL, which
+ * would silently drop attribution if the variable went missing.
+ */
 export function registerRedirectUrl() {
-  return process.env.NEXT_PUBLIC_KVB_REGISTER_URL || "https://mykvb.com/register?lang=en-US";
+  return process.env.NEXT_PUBLIC_KVB_REGISTER_URL || "https://kvbcaf.com/0uyykjeev";
 }
 
 export async function sendEmailCode(to: string, code: string, name: string) {

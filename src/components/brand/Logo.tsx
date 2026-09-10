@@ -14,6 +14,9 @@ import { cn } from "@/lib/utils";
  */
 const MARK = { src: "/brand/logo-icon-color.png", width: 1067, height: 720 };
 const WORDMARK = { src: "/brand/logo-wordmark.png", width: 1670, height: 314 };
+// The light wordmark is white lettering; on a light background it needs the
+// colour variant instead, whose "t" accent is dark enough to read.
+const WORDMARK_DARK = { src: "/brand/logo-wordmark-dark.png", width: 1670, height: 314 };
 
 export function DiamondMark({
   className,
@@ -35,10 +38,19 @@ export function DiamondMark({
   );
 }
 
-export function Wordmark({ className, priority = false }: { className?: string; priority?: boolean }) {
+export function Wordmark({
+  className,
+  priority = false,
+  onLight = false,
+}: {
+  className?: string;
+  priority?: boolean;
+  /** Use the dark lettering, for placement on a light background. */
+  onLight?: boolean;
+}) {
   return (
     <Image
-      {...WORDMARK}
+      {...(onLight ? WORDMARK_DARK : WORDMARK)}
       alt="31 Capitals"
       priority={priority}
       className={cn("object-contain", className)}
@@ -52,18 +64,20 @@ export function Logo({
   wordmarkClassName,
   wordmark = true,
   priority = false,
+  onLight = false,
 }: {
   className?: string;
   markClassName?: string;
   wordmarkClassName?: string;
   wordmark?: boolean;
   priority?: boolean;
+  onLight?: boolean;
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <DiamondMark className={cn("h-8 w-auto", markClassName)} priority={priority} />
       {wordmark ? (
-        <Wordmark className={cn("h-5 w-auto", wordmarkClassName)} priority={priority} />
+        <Wordmark className={cn("h-5 w-auto", wordmarkClassName)} priority={priority} onLight={onLight} />
       ) : (
         <span className="sr-only">31 Capitals</span>
       )}

@@ -23,9 +23,6 @@ export const metadata: Metadata = {
   title: "31 Capitals | Introducing Broker for Global Markets",
   description:
     "31 Capitals is an independent marketing and Introducing Broker brand. Premium onboarding, market insights, and personal support worldwide.",
-  icons: {
-    icon: "/brand/icon-512.png",
-  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

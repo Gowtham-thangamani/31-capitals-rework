@@ -40,8 +40,8 @@ export function Footer() {
           advice if necessary.
         </p>
         <p>
-          31 Capitals does not itself provide regulated brokerage services. Clients contract only with the brokerage
-          entity identified in their account opening documents. Products, services and regulatory protections vary by
+          31 Capitals is not a brokerage company, does not hold client funds, and does not provide investment advice.
+          Clients contract only with the brokerage entity identified in their account opening documents. Products, services and regulatory protections vary by
           jurisdiction. 31 Capitals works with clients and partners worldwide.
         </p>
         <p>© {new Date().getFullYear()} 31 Capitals. All rights reserved.</p>

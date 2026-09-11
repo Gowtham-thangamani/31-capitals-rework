@@ -115,8 +115,8 @@ export function verificationHtml({
           <tr>
             <td style="padding:20px 8px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.6;color:#6b6660;">
               <p style="margin:0 0 8px 0;">
-                31 Capitals is an independent marketing and Introducing Broker brand. It does not itself
-                provide regulated brokerage services.
+                31 Capitals is an independent marketing and Introducing Broker brand. It is not a brokerage
+                company, does not hold client funds, and does not provide investment advice.
               </p>
               <p style="margin:0;">
                 This is an automated message sent because someone entered this address on 31capitals.com.
@@ -151,6 +151,6 @@ export function verificationText({ code, name, minutes }: { code: string; name: 
     ``,
     `--`,
     `31 Capitals is an independent marketing and Introducing Broker brand.`,
-    `It does not itself provide regulated brokerage services.`,
+    `It is not a brokerage company, does not hold client funds, and does not provide investment advice.`,
   ].join("\n");
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { KvbPartner } from "@/components/brand/KvbLogo";
 import { DiamondMark } from "@/components/brand/Logo";
 import { MarketTicker } from "@/components/fx/MarketTicker";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ export function Hero() {
               <a href="#about">About the house</a>
             </Button>
           </div>
+          <KvbPartner className="mt-8" />
         </motion.div>
 
         <motion.div

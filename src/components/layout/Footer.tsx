@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { KvbPartner } from "@/components/brand/KvbLogo";
 import { Logo } from "@/components/brand/Logo";
 
 export function Footer() {
@@ -14,6 +15,7 @@ export function Footer() {
             An independent marketing and Introducing Broker brand connecting traders and business partners with
             established brokerage companies.
           </p>
+          <KvbPartner className="mt-6" />
         </div>
         <div>
           <p className="text-xs uppercase tracking-[0.24em] text-white/40">Navigate</p>

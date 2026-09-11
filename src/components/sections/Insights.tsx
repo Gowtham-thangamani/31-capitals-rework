@@ -69,7 +69,9 @@ export function Insights() {
 
   const load = useCallback(async (feed: Feed) => {
     try {
-      const res = await fetch(`/api/insights/${feed}`);
+      // The route's stale-while-revalidate is meant for the CDN; without no-cache the
+      // browser applies it too and shows the previous refresh (a poll behind on Newsflash).
+      const res = await fetch(`/api/insights/${feed}`, { cache: "no-cache" });
       const data = await res.json();
       if (!res.ok || !data?.ok) throw new Error(data?.error || "Feed unavailable");
       setLoaded((prev) => ({ ...prev, [feed]: data as FeedPayload }));

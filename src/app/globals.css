@@ -219,9 +219,105 @@ body {
 ::-webkit-scrollbar {
   width: 10px;
 }
+
+/* Swipe-to-scroll strips (the Insights tabs on phones) where the brand scrollbar
+   would sit under the controls like a stray bar. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(#ff7a28, #4a1008);
   border-radius: 999px;
+}
+
+/* ---------------------------------------------------------------------------
+   KVB article body (/insights/[id]). The HTML comes from KVB's CMS, sanitised
+   on the server in src/lib/kvb.ts; these rules style the tags it keeps.
+--------------------------------------------------------------------------- */
+.kvb-article {
+  color: rgba(247, 241, 234, 0.78);
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
+.kvb-article > * + * {
+  margin-top: 1.25em;
+}
+.kvb-article h2,
+.kvb-article h3,
+.kvb-article h4 {
+  margin-top: 2em;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.kvb-article h2 {
+  font-size: 1.6rem;
+}
+.kvb-article h3 {
+  font-size: 1.3rem;
+}
+/* KVB wraps each article's lead image in an h2. */
+.kvb-article > h2:first-child,
+.kvb-article h2:has(> img) {
+  margin-top: 0;
+}
+.kvb-article img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+}
+.kvb-article strong,
+.kvb-article b {
+  font-weight: 600;
+  color: #fff;
+}
+.kvb-article a {
+  color: #ffb068;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.kvb-article ul,
+.kvb-article ol {
+  padding-left: 1.4em;
+}
+.kvb-article ul {
+  list-style: disc;
+}
+.kvb-article ol {
+  list-style: decimal;
+}
+.kvb-article li + li {
+  margin-top: 0.4em;
+}
+.kvb-article li::marker {
+  color: #ff7a28;
+}
+.kvb-article blockquote,
+.kvb-article aside {
+  padding: 0.8em 1.25em;
+  border-left: 2px solid #ff7a28;
+  border-radius: 0 1rem 1rem 0;
+  background: rgba(255, 90, 20, 0.06);
+  color: rgba(247, 241, 234, 0.86);
+}
+.kvb-article table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+.kvb-article th,
+.kvb-article td {
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: left;
 }
 
 /* ---------------------------------------------------------------------------

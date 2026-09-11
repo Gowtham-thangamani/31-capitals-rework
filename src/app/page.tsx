@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Preloader } from "@/components/preloader/Preloader";
 import { Atmosphere } from "@/components/fx/Atmosphere";
 import { Header } from "@/components/layout/Header";
@@ -13,11 +13,19 @@ import { Services } from "@/components/sections/Services";
 import { Clients } from "@/components/sections/Clients";
 import { Partners } from "@/components/sections/Partners";
 import { Markets } from "@/components/sections/Markets";
+import { Insights } from "@/components/sections/Insights";
 import { Register } from "@/components/sections/Register";
 
 export default function Home() {
   const [ready, setReady] = useState(false);
   const onDone = useCallback(() => setReady(true), []);
+
+  // Sections only mount once the preloader finishes, so a deep link such as /#insights
+  // (the article pages link back that way) has nothing to land on at first paint.
+  useEffect(() => {
+    if (!ready || !window.location.hash) return;
+    document.getElementById(decodeURIComponent(window.location.hash.slice(1)))?.scrollIntoView();
+  }, [ready]);
 
   return (
     <>
@@ -36,6 +44,7 @@ export default function Home() {
             <Clients />
             <Partners />
             <Markets />
+            <Insights />
             <Register />
           </main>
           <Footer />

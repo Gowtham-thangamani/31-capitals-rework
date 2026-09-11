@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 
 export function Footer() {
@@ -17,10 +18,11 @@ export function Footer() {
         <div>
           <p className="text-xs uppercase tracking-[0.24em] text-white/40">Navigate</p>
           <div className="mt-4 flex flex-col gap-2 text-sm text-white/70">
-            <a href="#about">About</a>
-            <a href="#clients">Clients</a>
-            <a href="#partners">Partners</a>
-            <a href="#register">Open account</a>
+            <Link href="/#about">About</Link>
+            <Link href="/#clients">Clients</Link>
+            <Link href="/#partners">Partners</Link>
+            <Link href="/#insights">Insights</Link>
+            <Link href="/#register">Open account</Link>
           </div>
         </div>
         <div>
